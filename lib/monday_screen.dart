@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+/// MondayScreen is a StatefulWidget class
 class MondayScreen extends StatefulWidget {
   const MondayScreen({Key? key}) : super(key: key);
   @override
   State<MondayScreen> createState() => MondayScreenState();
 }
-
+/// extends State MondayScreen
 class MondayScreenState extends State<MondayScreen> {
   late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int result = 0;
@@ -15,8 +15,9 @@ class MondayScreenState extends State<MondayScreen> {
   final textController = TextEditingController();
   String inputtext = '';
   int outMo = 0;
-
-  Future<void> _inputBudget(String inputtext) async {
+  /// Expediture input from user
+  /// <br> calls the mainoutput()
+  Future<void> _inputExpenditure(String inputtext) async {
     int help = int.parse(inputtext);
     final SharedPreferences prefs = await _prefs;
     final int newCounter = help;
@@ -26,8 +27,9 @@ class MondayScreenState extends State<MondayScreen> {
     });
     mainoutput();
   }
-
-  Future<void> _plusBudget(String inputtext) async {
+  /// If the plus Button is pressed the Input and the value of exMo
+  /// where added this value will be saved in exMo again
+  Future<void> _plusExpenditure(String inputtext) async {
     final SharedPreferences prefs = await _prefs;
     int input = int.parse(inputtext);
     final int help = input;
@@ -39,8 +41,9 @@ class MondayScreenState extends State<MondayScreen> {
     });
     mainoutput();
   }
-
-  Future<void> _minusBudget(String inputtext) async {
+  /// If the minus Button is pressed the Input and the value of exMo
+  /// where subtracted this value will be saved in exMo again
+  Future<void> _minusExpenditure(String inputtext) async {
     final SharedPreferences prefs = await _prefs;
     int input = int.parse(inputtext);
     final int help = input;
@@ -52,13 +55,13 @@ class MondayScreenState extends State<MondayScreen> {
     });
     mainoutput();
   }
-
+  /// Gives back the value of exMo to the Mainpage
   Future<void> mainoutput() async {
     final SharedPreferences prefs = await _prefs;
     outMo = prefs.getInt('exMo')!;
   }
 
-
+  ///Initialise the State of _exMo
   @override
   void initState() {
     super.initState();
@@ -116,7 +119,7 @@ class MondayScreenState extends State<MondayScreen> {
                       suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
-                              _inputBudget(inputtext = textController.text);
+                              _inputExpenditure(inputtext = textController.text);
                             });
                           },
                           icon: Padding(
@@ -148,7 +151,7 @@ class MondayScreenState extends State<MondayScreen> {
                           child: TextButton(
                             onPressed: () {
                               setState(() {
-                                _plusBudget(inputtext = textController.text);
+                                _plusExpenditure(inputtext = textController.text);
                               });
                             },
                             child: Text(
@@ -170,7 +173,7 @@ class MondayScreenState extends State<MondayScreen> {
                           child: TextButton(
                               onPressed: () {
                                 setState(() {
-                                  _minusBudget(inputtext = textController.text);
+                                  _minusExpenditure(inputtext = textController.text);
                                 });
                               },
                               child: Text('-',

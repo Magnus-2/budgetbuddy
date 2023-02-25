@@ -9,11 +9,11 @@ import 'thursday_screen.dart';
 import 'friday_screen.dart';
 import 'saturday_screen.dart';
 import 'sunday_screen.dart';
-
+/// main MyApp
 void main() {
   runApp(const MyApp());
 }
-
+///Myapp is a StatelessWidget class
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+/// Budgetbuddy is a StatefullWidget class
 class Budgetbuddy extends StatefulWidget {
   const Budgetbuddy({Key? key}) : super(key: key);
 
@@ -44,11 +44,15 @@ class Budgetbuddy extends StatefulWidget {
   State<Budgetbuddy> createState() => BudgetbuddyState();
 }
 
+/// Is the Mainpage where you get a overview of your Budget for example
+/// how much you spend and how much Budget you have left.
 class BudgetbuddyState extends State<Budgetbuddy> {
   // _prefs will refer a created SharedPreferences  object
   late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   late Future<int> _budget;
+
+  ///Controlles the budget input
   final textController = TextEditingController();
   String inputtext = '';
   late Future<int> _exMo;
@@ -58,13 +62,15 @@ class BudgetbuddyState extends State<Budgetbuddy> {
   late Future<int> _exFr;
   late Future<int> _exSa;
   late Future<int> _exSu;
-
   late Future<int> _result;
   int result = 0;
+
+  /// Can also be changed to €/Euro or $/Dollar
   String currency = 'Baht'; // €, $, Baht
-  // for Baht a special fontSize is needed 30 please without currency take 40
+  /// for Baht a special fontSize is needed 30 please without currency take 40
   double currencyFS = 30;
 
+  /// Monday input
   Future<void> _inputExMo(int exMo) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exMo;
@@ -74,6 +80,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Tuesday input
   Future<void> _inputExTu(int exTu) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exTu;
@@ -83,6 +90,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Wednesday input
   Future<void> _inputExWe(int exWe) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exWe;
@@ -92,6 +100,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Thursday input
   Future<void> _inputExTh(int exTh) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exTh;
@@ -101,6 +110,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Friday input
   Future<void> _inputExFr(int exFr) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exFr;
@@ -110,6 +120,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Saturday input
   Future<void> _inputExSa(int exSa) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exSa;
@@ -119,6 +130,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Sunday input
   Future<void> _inputExSu(int exSu) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exSu;
@@ -128,6 +140,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// Updates the Budget which the user has given in
   Future<void> _inputBudget(String inputtext) async {
     int help = int.parse(inputtext);
     final SharedPreferences prefs = await _prefs;
@@ -139,6 +152,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     _division();
   }
 
+  /// divides all expenditures from the week with the budget
   Future<void> _division() async {
     final SharedPreferences prefs = await _prefs;
     int? divB = prefs.getInt('budget') ?? 0;
@@ -157,16 +171,22 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     });
   }
 
+  /// clears prefs
+  /// is called when the trashcan is clicked
   Future<void> _clear() async {
     final SharedPreferences prefs = await _prefs;
     await prefs.clear();
   }
 
+  /// updates the color for the BottomAppbar based in var result. <br>
+  /// Is called in initState()
   Future<void> colorManager() async {
     final SharedPreferences prefs = await _prefs;
     result = prefs.getInt('result')!;
   }
 
+  /// initialise all States from Monday - Sunday and budget result
+  /// <br> Calls the colorManager()
   @override
   void initState() {
     super.initState();
@@ -215,8 +235,11 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                   Navigator.pushNamed(context, '/');
                 });
               },
-              icon: Icon(Icons.delete, color: Colors.white,
-                size: double.tryParse('30'),),
+              icon: Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: double.tryParse('30'),
+              ),
             ),
           ],
           automaticallyImplyLeading: false),
@@ -833,7 +856,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                     }),
               )),
         ),
-      ), // Result
+      ), // Shows the Result
     );
-  }
+  } // All Widgets of the MainPage
 }

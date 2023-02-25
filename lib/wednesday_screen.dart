@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+/// Bases on the MondayScreen
 class WednesdayScreen extends StatefulWidget {
   const WednesdayScreen({Key? key}) : super(key: key);
   @override
@@ -16,7 +16,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
   String inputtext = '';
   int outWe = 0;
 
-  Future<void> _inputBudget(String inputtext) async {
+  Future<void> _inputExpenditure(String inputtext) async {
     final SharedPreferences prefs = await _prefs;
     int help = int.parse(inputtext);
     final int newCounter = help;
@@ -27,7 +27,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
     mainoutput();
   }
 
-  Future<void> _plusBudget(String inputtext) async {
+  Future<void> _plusExpenditure(String inputtext) async {
     final SharedPreferences prefs = await _prefs;
     int input = int.parse(inputtext);
     final int help = input;
@@ -40,7 +40,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
     mainoutput();
   }
 
-  Future<void> _minusBudget(String inputtext) async {
+  Future<void> _minusExpenditure(String inputtext) async {
     final SharedPreferences prefs = await _prefs;
     int input = int.parse(inputtext);
     final int help = input;
@@ -115,7 +115,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
                           suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _inputBudget(inputtext = textController.text);
+                                  _inputExpenditure(inputtext = textController.text);
                                 });
                               },
                               icon: Padding(
@@ -147,7 +147,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
                               child: TextButton(
                                 onPressed: () {
                                   setState(() {
-                                    _plusBudget(inputtext = textController.text);
+                                    _plusExpenditure(inputtext = textController.text);
                                   });
                                 },
                                 child: Text(
@@ -171,7 +171,7 @@ class WednesdayScreenState extends State<WednesdayScreen> {
                               child: TextButton(
                                   onPressed: () {
                                     setState(() {
-                                      _minusBudget(inputtext = textController.text);
+                                      _minusExpenditure(inputtext = textController.text);
                                     });
                                   },
                                   child: Text('-',
