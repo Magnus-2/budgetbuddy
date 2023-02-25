@@ -47,8 +47,7 @@ class Budgetbuddy extends StatefulWidget {
 class BudgetbuddyState extends State<Budgetbuddy> {
   // _prefs will refer a created SharedPreferences  object
   late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  // _counter as a Future
-  //int? _counter;
+
   late Future<int> _budget;
   final textController = TextEditingController();
   String inputtext = '';
@@ -62,6 +61,9 @@ class BudgetbuddyState extends State<Budgetbuddy> {
 
   late Future<int> _result;
   int result = 0;
+  String currency = 'Baht'; // €, $, Baht
+  // for Baht a special fontSize is needed 30 please without currency take 40
+  double currencyFS = 30;
 
   Future<void> _inputExMo(int exMo) async {
     final SharedPreferences prefs = await _prefs;
@@ -71,6 +73,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exMo') ?? 0;
     });
   }
+
   Future<void> _inputExTu(int exTu) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exTu;
@@ -79,6 +82,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exTu') ?? 0;
     });
   }
+
   Future<void> _inputExWe(int exWe) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exWe;
@@ -87,6 +91,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exWe') ?? 0;
     });
   }
+
   Future<void> _inputExTh(int exTh) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exTh;
@@ -95,6 +100,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exTh') ?? 0;
     });
   }
+
   Future<void> _inputExFr(int exFr) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exFr;
@@ -103,6 +109,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exFr') ?? 0;
     });
   }
+
   Future<void> _inputExSa(int exSa) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exSa;
@@ -111,6 +118,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exSa') ?? 0;
     });
   }
+
   Future<void> _inputExSu(int exSu) async {
     final SharedPreferences prefs = await _prefs;
     final int newEx = exSu;
@@ -119,6 +127,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('exSu') ?? 0;
     });
   }
+
   Future<void> _inputBudget(String inputtext) async {
     int help = int.parse(inputtext);
     final SharedPreferences prefs = await _prefs;
@@ -141,19 +150,17 @@ class BudgetbuddyState extends State<Budgetbuddy> {
     int? divSa = prefs.getInt('exSa') ?? 0;
     int? divSu = prefs.getInt('exSu') ?? 0;
 
-     result = divB - (divMo+divTu+divWe+divTh+divFr+divSa+divSu);
+    result = divB - (divMo + divTu + divWe + divTh + divFr + divSa + divSu);
     prefs.setInt('result', result);
-    _result = _prefs.then((SharedPreferences prefs){
+    _result = _prefs.then((SharedPreferences prefs) {
       return prefs.getInt('result') ?? 0;
     });
   }
 
-
-  Future<void> _clearCounter() async {
+  Future<void> _clear() async {
     final SharedPreferences prefs = await _prefs;
     await prefs.clear();
   }
-
 
   Future<void> colorManager() async {
     final SharedPreferences prefs = await _prefs;
@@ -191,57 +198,83 @@ class BudgetbuddyState extends State<Budgetbuddy> {
       return prefs.getInt('result') ?? 0;
     });
     colorManager();
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Budget Buddy"), centerTitle: true),
+      appBar: AppBar(
+          backgroundColor: Colors.indigo,
+          title: const Text("Budget Buddy"),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                _clear();
+                setState(() {
+                  Navigator.pushNamed(context, '/');
+                });
+              },
+              icon: Icon(Icons.delete, color: Colors.white,
+                size: double.tryParse('30'),),
+            ),
+          ],
+          automaticallyImplyLeading: false),
       body: SingleChildScrollView(
         child: Container(
-        decoration: const BoxDecoration(
-        gradient: LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment(0.8, 1),
-      colors: <Color>[
-        Colors.indigoAccent,
-        Colors.blueGrey,
-      ],),),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment(0.8, 1),
+              colors: <Color>[
+                Colors.indigoAccent,
+                Colors.blueGrey,
+              ],
+            ),
+          ),
           child: Center(
             child: Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: TextField(
-                    style: TextStyle(color: Colors.white, fontSize: 30,),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                    ),
                     keyboardType: TextInputType.number,
                     controller: textController,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
                     ], // Only numbers can be entered
                     decoration: InputDecoration(
-                      filled: true,
-                        fillColor: Color.fromARGB(200,21,21,21),
+                        filled: true,
+                        fillColor: Color.fromARGB(200, 21, 21, 21),
                         border: OutlineInputBorder(),
-                        hintText: 'Please enter your Budget',hintStyle: TextStyle(color: Colors.white54, fontSize: 20),
+                        hintText: 'Please enter your Budget',
+                        hintStyle:
+                            TextStyle(color: Colors.white54, fontSize: 20),
                         suffixIcon: IconButton(
                             onPressed: () {
                               setState(() {
                                 _inputBudget(inputtext = textController.text);
                               });
                             },
-                            icon: Icon(Icons.arrow_circle_right_sharp, color: Colors.white, size: double.tryParse('30'),))),
+                            icon: Icon(
+                              Icons.arrow_circle_right_sharp,
+                              color: Colors.white,
+                              size: double.tryParse('30'),
+                            ))),
                   ),
-                ),// InputBudget
+                ), // InputBudget
                 FittedBox(
                   fit: BoxFit.fitWidth,
                   alignment: Alignment.center,
                   child: Container(
                     height: 50,
-                    decoration: BoxDecoration(color: Color.fromARGB(200, 21, 21, 21), borderRadius: BorderRadius.circular(30.0)),
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(200, 21, 21, 21),
+                        borderRadius: BorderRadius.circular(30.0)),
                     child: Center(
                       child: FutureBuilder<int>(
                           future: _budget,
@@ -254,7 +287,11 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                 if (snapshot.hasError) {
                                   return const Text('Error');
                                 } else {
-                                  return Text('  ${snapshot.data}  ',style: TextStyle(color: Colors.white,fontSize: 30),);
+                                  return Text(
+                                    '   ${snapshot.data} $currency  ',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 30),
+                                  );
                                 }
                             }
                           }),
@@ -293,7 +330,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Monday',style: TextStyle(fontSize: 30, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Monday',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -309,7 +353,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -321,7 +370,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                           ),
                         ),
                       ) //Monday
-,
+                      ,
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
@@ -350,7 +399,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Tuesday',style: TextStyle(fontSize: 30, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Tuesday',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -366,7 +422,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -380,7 +441,7 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                       ) //Tuesday
                     ],
                   ),
-                ),// Monday, Tuesday
+                ), // Monday, Tuesday
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -413,7 +474,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Wednesday',style: TextStyle(fontSize: 29, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Wednesday',
+                                  style: TextStyle(
+                                      fontSize: 29,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -429,7 +497,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -470,7 +543,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Thursday',style: TextStyle(fontSize: 30, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Thursday',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -486,7 +566,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -533,7 +618,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Friday',style: TextStyle(fontSize: 29, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Friday',
+                                  style: TextStyle(
+                                      fontSize: 29,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -549,7 +641,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -590,7 +687,14 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                   _division();
                                   setState(() {});
                                 },
-                                child: const Text('Saturday',style: TextStyle(fontSize: 30, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                                child: const Text(
+                                  'Saturday',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 2.0),
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10.0),
@@ -606,7 +710,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                             if (snapshot.hasError) {
                                               return const Text('Error');
                                             } else {
-                                              return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                              return Text(
+                                                '${snapshot.data} $currency',
+                                                style: TextStyle(
+                                                    fontSize: currencyFS,
+                                                    color: Colors.white),
+                                              );
                                             }
                                         }
                                       }),
@@ -645,13 +754,20 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                           TextButton(
                             onPressed: () async {
                               print('will load a Sunday screen');
-                              dynamic outSu = await Navigator.pushNamed(
-                                  context, '/sunday');
+                              dynamic outSu =
+                                  await Navigator.pushNamed(context, '/sunday');
                               _inputExSu(outSu);
                               _division();
                               setState(() {});
                             },
-                            child: const Text('Sunday',style: TextStyle(fontSize: 30, color: Colors.white, decoration: TextDecoration.underline, decorationThickness: 2.0),),
+                            child: const Text(
+                              'Sunday',
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  color: Colors.white,
+                                  decoration: TextDecoration.underline,
+                                  decorationThickness: 2.0),
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -667,7 +783,12 @@ class BudgetbuddyState extends State<Budgetbuddy> {
                                         if (snapshot.hasError) {
                                           return const Text('Error');
                                         } else {
-                                          return Text('${snapshot.data}',style: TextStyle(fontSize: 40, color: Colors.white),);
+                                          return Text(
+                                            '${snapshot.data} $currency',
+                                            style: TextStyle(
+                                                fontSize: currencyFS,
+                                                color: Colors.white),
+                                          );
                                         }
                                     }
                                   }),
@@ -686,33 +807,33 @@ class BudgetbuddyState extends State<Budgetbuddy> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: result >= 0  ? Colors.green : Colors.red,
-        child: Center(heightFactor: double.tryParse('2'),
+        color: result >= 0 ? Colors.green : Colors.red,
+        child: Center(
+          heightFactor: double.tryParse('2'),
           child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Container(
-              child: FutureBuilder<int>(
-                  future: _result,
-                  builder: (BuildContext context,
-                      AsyncSnapshot<int> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return const CircularProgressIndicator();
-                      default:
-                        if (snapshot.hasError) {
-                          return const Text('Error');
-                        } else {
-                          return Text('${snapshot.data}',style: TextStyle(fontSize: 30),);
-                        }
-                    }
-                  }),
-            )
-          ),
+              padding: const EdgeInsets.all(2.0),
+              child: Container(
+                child: FutureBuilder<int>(
+                    future: _result,
+                    builder:
+                        (BuildContext context, AsyncSnapshot<int> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const CircularProgressIndicator();
+                        default:
+                          if (snapshot.hasError) {
+                            return const Text('Error');
+                          } else {
+                            return Text(
+                              '${snapshot.data} $currency',
+                              style: TextStyle(fontSize: 30),
+                            );
+                          }
+                      }
+                    }),
+              )),
         ),
       ), // Result
     );
   }
-
-
 }
-
